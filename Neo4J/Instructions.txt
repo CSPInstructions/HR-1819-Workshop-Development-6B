@@ -1,0 +1,116 @@
+Neo4J wordt gebruikt i.c.m. Cypher om graph databases te maken. In dit bestand vind je
+een korte instructies over het gebruik van het programma. De voorbeelden die hier staan
+kunnen worden uitgevoerd in het programma.
+
+
+NODES
+We beginnen met het aanmaken van twee studenten: Jimmy en Henk. Om nodes aan te maken
+in Neo4J moeten we beginnen met "create". Een node volgt tussen haakjes, meerdere
+nodes hebben ieder hun eigen haakjes gescheiden door een komma. Iedere node die we 
+maken moet worden gekoppeld aan een variabele (s1 en s2). Aan het einde hebben we een 
+return met deze variabele zodat we het resultaat te zien krijgen. Student kan in de 
+query worden gezien als het type.
+
+create (s1:Student{name: "Jimmy"}), (s2:Student{name: "Henk"}) return s1, s2
+
+
+GET ALL DATA
+Om tussendoor alle data uit de database te laten zien, gebruiken we match. We gaan zoeken
+naar alle elementen, die noemen we hier n. In het voorbeeld wordt n gelijk gesteld aan
+alle onderdelen van de database omdat we geen condities meegegeven. Return n zorgt
+ervoor dat we het resultaat te zien krijgen.
+
+match (n) return n
+
+
+RELATIES
+De volgende stap is het maken van een relatie (edge). We willen op een manier kunnen
+aangeven dat de studenten samen studeren. Hiervoor maken we twee relaties aan, eentje
+van Jimmy naar Henk en de andere van Henk naar Jimmy. Doormiddel van match slaan we
+de studenten op in de variabelen s1 en s2. Door de naam aan te geven bij de studenten
+selecteert Neo4J enkel de studenten die daaraan voldoen. Create kan vervolgens gebruikt
+worden om de relatie aan te maken. We maken een pijl, die wijst naar de doel-entiteit 
+van de relatie. Dit werkt als volgt:
+
+        (van)-[:NaamVanRelatie]->(naar)
+                    of
+        (naar)<-[:NaamVanRelatie]-(van)
+    
+We koppelen de twee studenten aan elkaar door eerst een "StudiesWith" relatie te maken
+van Jimmy naar Henk, en vervolgens andersom. 
+
+match (s1:Student{name: "Jimmy"}), (s2:Student{name: "Henk"})
+create (s1)-[:StudiesWith]->(s2)
+
+match (s1:Student{name: "Jimmy"}), (s2:Student{name: "Henk"})
+create (s1)<-[:StudiesWith]-(s2)
+
+
+EEN ASSIGNMENT
+Op dezelfde manier als de studenten gaan we nu een assignment aanmaken. De studenten
+moeten wel wat leren op school. In dit geval gaan de studenten aan de slag met 
+Development 6B. 
+
+CREATE (a1:Assignment{name: "Development 6B"}) return a1
+
+
+HET MAKEN VAN DE ASSIGNMENT
+We moeten nu een manier hebben aan te geven dat een student een assignment heeft
+gemaakt. Dit doen we door een nieuwe relatie te maken van Jimmy naar Development
+6B. In het voorbeeld wordt er gebruik gemaakt van de relatienaam "Completed"
+
+match (s1:Student{name: "Jimmy"}), (a1:Assignment{name: "Development 6B"})
+create (s1)-[:Completed]->(a1)
+
+
+FILTEREN
+We hebben nu een enkele student die de assignment heeft gemaakt. De volgende stap
+is het ophalen van de studenten die assignment hebben gemaakt. We gebruiken 
+hiervoor een verglijkbare syntax met het maken van de relatie. Door informatie
+in te vullen, zorgen we ervoor dat we kunnen filteren op de mensen die de
+assignment hebben voltooid. Aan het einde geven we de naam van de student en
+de naam van de assignment terug.
+
+match (s:Student)-[:Completed]->(a:Assignment) return s.name, a.name
+
+
+VERWIJDEREN RELATIES
+De opdracht gever wilt een wijziging doorvoeren in de manier waarop de relaties
+tussen studenten en assignments worden opgeslagen. Voordat deze wijziging doorgevoerd
+kan worden is het essentieel om de bestaande relatie te verwijderen. Hiervoor 
+selecteren we alle "Completed" relaties waarna we die verwijderen. Omdat we geen "van"
+en "naar" aangeven in de match, krijgen we alle relaties genaamd "Completed" terug.
+
+match ()-[r:Completed]-() DELETE r
+
+
+RELATIES MET PROPERTIES 
+De volgende stap is om een relatie aan te maken met properties. De opdrachtgever
+wilt namelijk het cijfer zien, niet enkel of de student geslaagd is of niet.
+Een property kunnen we toevoegen aan relatie op dezelfde manier als het opslaan
+van informatie in nodes. Voor beide studenten voegen we het cijfer toe aan de 
+database.
+
+match (s1:Student{name: "Jimmy"}), (a1:Assignment{name: "Development 6B"})
+create (s1)-[:Completed{grade:7}]->(a1)
+
+match (s1:Student{name: "Henk"}), (a1:Assignment{name: "Development 6B"})
+create (s1)-[:Completed{grade:4}]->(a1)
+
+
+QUERY DE PROPERTIES
+De laatste stap is om ervoor te zorgen dat we de studenten apart van elkaar
+terug krijgen, alle studenten met een voldoende en alle studenten met een 
+onvoldoende. De match werkt hetzelfde. Met de gedachte dat s, r en a 
+variabelen zijn gebruiken we where om te bepalen hoe hoog het cijfer is.
+Vervolgens geven de naam van de student, het cijfer en de naam van de
+assignment terug in de return.
+
+match (s:Student)-[r:Completed]-(a:Assignment)
+where r.grade => 5.5
+return s.name, r.grade, a.name
+
+Get student with a grade less then 5.5
+match (s:Student)-[r:Completed]-(a:Assignment)
+where r.grade < 5.5
+return s.name, r.grade, a.name
