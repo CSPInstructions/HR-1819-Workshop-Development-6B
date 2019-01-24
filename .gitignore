@@ -1,1 +1,8 @@
+# Folders
+bin/
+obj/
+.vs/
+
+# Files
 .DS_Store
+*.sln
