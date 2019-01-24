@@ -1,0 +1,85 @@
+In dit bestand zijn de antwoorden van de opdrachten te vinden
+Probeer eerst de locks zelf toe te voegen aan de transacties
+Kijk daarna in deze antwoorden of je het goed hebt gedaan
+LET OP: Meerdere antwoorden zijn mogelijk
+
+
+OPDRACHT 1 :: TWEE TRANSACTIES
+T1              T2
+S(A)
+R(A)
+                S(C)
+                R(C)
+X(B)
+W(B)
+Commit
+Unlock(A, B)
+                X(B)
+                W(B)
+                Commit
+
+
+OPDRACHT 2 :: TWEE TRANSACTIES
+T1              T2
+S(A)
+R(A)
+                X(C)
+                W(C)
+S(B)
+R(B)
+                X(B)
+                Await(B)
+X(C)
+Await(C)
+Terminate
+Unlock(A, B)
+                X(B)
+                W(B)
+                S(A)
+                R(A)
+                Commit
+                Unlock(A, B, C)
+S(A)
+R(A)
+S(B)
+R(B)
+X(C)
+W(C)
+Commit
+Unlock(A, B, C)
+
+
+OPDRACHT 3 :: DRIE TRANSACTIES
+T1              T2              T3
+S(B)
+R(B)
+                X(A)
+                W(A)
+S(A)
+Await(A)
+                S(B)
+                Await(B)
+                                X(B)
+                                Await(B)
+Terminate
+Unlock(B)
+                S(B)
+                R(B)
+                X(B)
+                W(B)
+                Commit
+                Unlock(A, B)
+                                X(B)
+                                W(B)
+                                X(C)
+                                W(C)
+                                Commit
+                                Unlock(B, C)
+S(B)
+R(B)
+S(A)
+R(A)
+X(A)
+W(A)
+Commit
+Unlock(A, B)

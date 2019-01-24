@@ -1,0 +1,40 @@
+In dit bestand staan drie oefenopgave voor transacties
+Het is de bedoeling dat jij aangeeft welke locks er moeten worden gebruikt
+Als er een deadlock ontstaat moet jij bepalen welke transacties er moet worden gestopt om verder te gaan
+
+
+OPDRACHT 1 :: TWEE TRANSACTIES
+T1              T2
+R(A)
+                R(C)
+W(B)
+Commit
+                W(B)
+                Commit
+
+
+OPDRACHT 2 :: TWEE TRANSACTIES
+T1              T2
+R(A)
+                W(C)
+R(B)
+                W(B)
+                R(A)
+W(C)
+Commit
+                Commit
+
+
+OPDRACHT 3 :: DRIE TRANSACTIES
+T1              T2              T3
+R(B)
+                W(A)
+R(A)
+                R(B)
+                                W(B)
+                                W(C)
+                W(B)
+                                Commit
+                Commit
+W(A)
+Commit
