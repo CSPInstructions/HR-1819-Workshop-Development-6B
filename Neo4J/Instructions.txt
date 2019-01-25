@@ -107,7 +107,7 @@ Vervolgens geven de naam van de student, het cijfer en de naam van de
 assignment terug in de return.
 
 match (s:Student)-[r:Completed]-(a:Assignment)
-where r.grade => 5.5
+where r.grade >= 5.5
 return s.name, r.grade, a.name
 
 Get student with a grade less then 5.5
